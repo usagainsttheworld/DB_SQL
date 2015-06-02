@@ -42,4 +42,11 @@ select name, title
 from Reviewer, Movie, Rating R1, Rating R2
 where movie.mID=R1.mID and R1.rID=reviewer.rID
 	and movie.mID=R2.mID and R2.rID= reviewer.rID
-	and R1.ratingDate &lt; R2.ratingDate and R1.stars &lt; R2.stars;</sql><current_tab id="0"/></tab_sql></sqlb_project>
+	and R1.ratingDate &lt; R2.ratingDate and R1.stars &lt; R2.stars;
+
+/*Q7 For each movie that has at least one rating, find the highest number of stars that movie received. Return the movie title and number of stars. Sort by movie title. 
+select title, max(stars)
+from Movie, Rating
+where movie.mID=rating.mID
+group by rating.mID 
+order by title;</sql><current_tab id="0"/></tab_sql></sqlb_project>
