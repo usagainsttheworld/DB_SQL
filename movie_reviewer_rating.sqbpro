@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/Users/ling/Desktop/DB_SQL/rating.db"/><window><current_tab id="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="456"/><expanded_item id="0" parent="-1"/><expanded_item id="1" parent="-1"/><expanded_item id="2" parent="-1"/><expanded_item id="3" parent="-1"/></tab_structure><tab_browse><current_table name="Reviewer"/><column_widths data="AAAAAQAAAAoATQBvAHYAaQBlAAAAAQAAAAAAAAAA"/><sort column="0" order="0"/></tab_browse><tab_sql><sql name="SQL 1">/*There are 3 tables. Here's the schema: 
+
+Movie ( mID, title, year, director ) 
+English: There is a movie with ID number mID, a title, a release year, and a director. 
+
+Reviewer ( rID, name ) 
+English: The reviewer with ID number rID has a certain name. 
+
+Rating ( rID, mID, stars, ratingDate ) 
+English: The reviewer rID gave the movie mID a number of stars rating (1-5) on a certain ratingDate. */
+/***************************************************/
+
+/*Q1  Find the titles of all movies directed by Steven Spielberg. */
+select title
+from Movie
+where director = &quot;Steven Spielberg&quot;;
+
+/*Q2 Find all years that have a movie that received a rating of 4 or 5, and sort them in increasing order. */
+select distinct year
+from Movie,Rating
+where Movie.mID=Rating.mID and stars &gt;=4
+order by year;
+
+/*Q3 Find the titles of all movies that have no ratings */
+select title
+from Movie
+where mID in (select mID from Movie) and mID not in (select mID from Rating);
+
+/*Q4 Some reviewers didn't provide a date with their rating. Find the names of all reviewers who have ratings with a NULL value for the date. */
+
+select name
+from Reviewer
+where rID in (select rID from Rating where ratingDate = NULL);</sql><current_tab id="0"/></tab_sql></sqlb_project>
