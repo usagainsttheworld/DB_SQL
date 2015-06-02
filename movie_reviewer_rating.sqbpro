@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/Users/ling/Desktop/DB_SQL/rating.db"/><window><current_tab id="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="456"/><expanded_item id="0" parent="-1"/><expanded_item id="1" parent="-1"/><expanded_item id="2" parent="-1"/><expanded_item id="3" parent="-1"/></tab_structure><tab_browse><current_table name="Rating"/><column_widths data="AAAAAQAAAAoATQBvAHYAaQBlAAAAAQAAAAAAAAAA"/><sort column="0" order="0"/></tab_browse><tab_sql><sql name="SQL 1">/*There are 3 tables. Here's the schema: 
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/Users/ling/Desktop/DB_SQL/rating.db"/><window><current_tab id="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="577"/><expanded_item id="0" parent="-1"/><expanded_item id="1" parent="-1"/><expanded_item id="2" parent="-1"/><expanded_item id="3" parent="-1"/></tab_structure><tab_browse><current_table name="Movie"/><column_widths data="AAAAAQAAAAoATQBvAHYAaQBlAAAAAQAAAAAAAAAA"/><sort column="0" order="0"/></tab_browse><tab_sql><sql name="SQL 1">/*There are 3 tables. Here's the schema: 
 
 Movie ( mID, title, year, director ) 
 English: There is a movie with ID number mID, a title, a release year, and a director. 
@@ -49,4 +49,47 @@ select title, max(stars)
 from Movie, Rating
 where movie.mID=rating.mID
 group by rating.mID 
-order by title;</sql><current_tab id="0"/></tab_sql></sqlb_project>
+order by title;
+
+/*Q8 For each movie, return the title and the 'rating spread', that is, the difference between highest and lowest ratings given to that movie. Sort by rating spread from highest to lowest, then by movie title. 
+select title, (Max(stars)-Min(stars)) as ratingspread
+from Movie, Rating
+where movie.mID=rating.mID
+group by rating.mID
+order by ratingspread desc, title;
+
+/*Q9 Find the difference between the average rating of movies released before 1980 and the average rating of movies released after 1980. (Make sure to calculate the average rating for each movie, then the average of those averages for movies before 1980 and movies after. Don't just calculate the overall average rating before and after 1980.) */
+/*****the average rating for each movie before 1980*/
+select avg(stars) as avg4movie_bf1980
+from Movie, Rating
+where movie.mID=rating.mID and year &lt; 1980
+group by rating.mID
+/*****the average rating for each movie after 1980*/
+select avg(stars) as avg4movie_af1980
+from Movie, Rating
+where movie.mID=rating.mID and year &gt; 1980
+group by rating.mID
+/*****the average of those averages for movies before 1980*/
+select avg(avg4movie_bf1980) bf1980
+from (select avg(stars) as avg4movie_bf1980
+	from Movie, Rating
+	where movie.mID=rating.mID and year &lt; 1980
+	group by rating.mID)
+*****the average of those averages for movies after 1980*/
+select avg(avg4movie_af1980) af1980
+from (select title, avg(stars) as avg4movie_af1980
+	from Movie, Rating
+	where movie.mID=rating.mID and year &gt; 1980
+	group by rating.mID)
+/*****Difference between the average rating of movies released before and after 1980*/
+select bf.bf1980-af.af1980
+from (select avg(avg4movie_bf1980) bf1980
+	from (select avg(stars) as avg4movie_bf1980
+		from Movie, Rating
+		where movie.mID=rating.mID and year &lt; 1980
+		group by rating.mID)) as bf,
+	(select avg(avg4movie_af1980) af1980
+		from (select title, avg(stars) as avg4movie_af1980
+			from Movie, Rating
+			where movie.mID=rating.mID and year &gt; 1980
+			group by rating.mID))as af;</sql><current_tab id="0"/></tab_sql></sqlb_project>
