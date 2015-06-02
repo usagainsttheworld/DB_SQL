@@ -27,7 +27,17 @@ from Movie
 where mID in (select mID from Movie) and mID not in (select mID from Rating);
 
 /*Q4 Some reviewers didn't provide a date with their rating. Find the names of all reviewers who have ratings with a NULL value for the date. */
-
 select name
-from Reviewer
-where rID in (select rID from Rating where ratingDate = NULL);</sql><current_tab id="0"/></tab_sql></sqlb_project>
+from reviewer 
+where rID in (select rID from Rating where ratingDate is NULL);
+
+/*Q5 Write a query to return the ratings data in a more readable format: reviewer name, movie title, stars, and ratingDate. Also, sort the data, first by reviewer name, then by movie title, and lastly by number of stars. */
+select name, title, stars, ratingDate
+from Reviewer, Movie, Rating
+where Reviewer.rID=Rating.rID and movie.mID=rating.mID
+order by name, title, stars;
+
+/*Q6 For all cases where the same reviewer rated the same movie twice and gave it a higher rating the second time, return the reviewer's name and the title of the movie. */
+select name, title
+from Reviewer, Movie, Rating R1, Rating R2
+where</sql><current_tab id="0"/></tab_sql></sqlb_project>
