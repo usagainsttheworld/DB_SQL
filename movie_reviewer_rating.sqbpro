@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/Users/ling/Desktop/DB_SQL/rating.db"/><window><current_tab id="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="808"/><expanded_item id="0" parent="-1"/><expanded_item id="1" parent="-1"/><expanded_item id="2" parent="-1"/><expanded_item id="3" parent="-1"/></tab_structure><tab_browse><current_table name="Rating"/><column_widths data="AAAAAQAAAAoATQBvAHYAaQBlAAAAAQAAAAAAAAAA"/><sort column="2" order="1"/></tab_browse><tab_sql><sql name="SQL 1">/*There are 3 tables. Here's the schema: 
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/Users/ling/Desktop/DB_SQL/rating.db"/><window><current_tab id="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="808"/><expanded_item id="0" parent="-1"/><expanded_item id="1" parent="-1"/><expanded_item id="2" parent="-1"/><expanded_item id="3" parent="-1"/></tab_structure><tab_browse><current_table name="Movie"/><column_widths data="AAAAAQAAAAoATQBvAHYAaQBlAAAAAQAAAAAAAAAA"/><sort column="0" order="0"/></tab_browse><tab_sql><sql name="SQL 1">/*There are 3 tables. Here's the schema: 
 
 Movie ( mID, title, year, director ) 
 English: There is a movie with ID number mID, a title, a release year, and a director. 
@@ -199,4 +199,30 @@ select	director, title, MAX(stars)as HighestRating
 from	Movie, Rating
 where	movie.mID=rating.mID
 	and director is not NULL
-group by	director</sql><current_tab id="0"/></tab_sql></sqlb_project>
+group by	director
+
+
+/***********Modification***************/
+/* Q1 Add the reviewer Roger Ebert to your database, with an rID of 209*/
+insert into 	Reviewer (rID, name)
+values		(209, 'Roger Ebert');
+
+/* Q2 Insert 5-star ratings by James Cameron for all movies in the database. Leave the review date as NULL.*/
+Insert into	Rating
+select		rID, mID, 5, NULL
+from		Movie, Reviewer
+where		name = 'James Cameron'	
+	 
+/* Q3 For all movies that have an average rating of 4 stars or higher, add 25 to the release year. (Update the existing tuples; don't insert new tuples.) */
+update	Movie
+set	year=year+25
+where	mID in (select mID
+		from Rating
+		group by	mID
+		having	avg(stars) &gt;=4
+		)	
+
+/* Q4 Remove all ratings where the movie's year is before 1970 or after 2000, and the rating is fewer than 4 stars */
+delete from	Rating
+where		mID in (select mID from Movie where year &lt; 1970 or year &gt; 2000) 
+		and stars &lt; 4</sql><current_tab id="0"/></tab_sql></sqlb_project>
