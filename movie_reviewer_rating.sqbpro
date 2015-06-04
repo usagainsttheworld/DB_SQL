@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/Users/ling/Desktop/DB_SQL/rating.db"/><window><current_tab id="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="808"/><expanded_item id="0" parent="-1"/><expanded_item id="1" parent="-1"/><expanded_item id="2" parent="-1"/><expanded_item id="3" parent="-1"/></tab_structure><tab_browse><current_table name="Movie"/><column_widths data="AAAAAQAAAAoATQBvAHYAaQBlAAAAAQAAAAAAAAAA"/><sort column="0" order="0"/></tab_browse><tab_sql><sql name="SQL 1">/*There are 3 tables. Here's the schema: 
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/Users/ling/Desktop/DB_SQL/rating.db"/><window><current_tab id="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="808"/><expanded_item id="0" parent="-1"/><expanded_item id="1" parent="-1"/><expanded_item id="2" parent="-1"/><expanded_item id="3" parent="-1"/></tab_structure><tab_browse><current_table name="Movie"/><column_widths data="AAAAAQAAAAoATQBvAHYAaQBlAAAAAQAAAAAAAAAA"/><sort column="4" order="0"/></tab_browse><tab_sql><sql name="SQL 1">/*There are 3 tables. Here's the schema: 
 
 Movie ( mID, title, year, director ) 
 English: There is a movie with ID number mID, a title, a release year, and a director. 
@@ -168,4 +168,41 @@ where director in (select director
 		having count(title)&gt;1)
 order by 2,1
 
-/* Q19 Find the movie(s) with the highest average rating. Return the movie title(s) and average rating. (Hint: This query is more difficult to write in SQLite than other systems; you might think of it as finding the highest average rating and then choosing the movie(s) with that average rating.)</sql><current_tab id="0"/></tab_sql></sqlb_project>
+/* Q19 Find the movie(s) with the highest average rating. Return the movie title(s) and average rating. (Hint: This query is more difficult to write in SQLite than other systems; you might think of it as finding the highest average rating and then choosing the movie(s) with that average rating.) 
+select title, maxRating
+from Movie, (select mID, max(avgRating)as maxRating
+		from (select mID, avg(stars) as avgRating
+			from Rating
+			group by mID) as avgMovie)
+		as maxMovie
+where Movie.mID = maxMovie.mID
+
+/* Q20 Find the movie(s) with the lowest average rating. Return the movie title(s) and average rating. (Hint: This query may be more difficult to write in SQLite than other systems; you might think of it as finding the lowest average rating and then choosing the movie(s) with that average rating.) 
+
+
+select title, avgRating
+from	Movie, 
+	(select mID, avg(stars) as avgRating
+		from Rating
+		group by mID) 
+	as avgtable	
+where movie.mID = avgtable.mID
+	and avgRating =(select MIN(avgRating) as minRating
+			from (select mID, avg(stars) as avgRating
+				from Rating
+				group by mID) 
+				as avgtable)
+
+/* Q21 For each director, return the director's name together with the title(s) of the movie(s) they directed that received the highest rating among all of their movies, and the value of that rating. Ignore movies whose director is NULL. 
+
+select	distinct director, title
+from	Movie, Rating,
+	(select 	rating.rID, stars
+	from 	Reviewer, Rating
+	where 	reviewer.rID = rating.rID
+	group by	rating.mID
+	having	stars = Max(stars)
+	) 
+	as maxtable
+where	movie.mID=rating.mID
+	and rating.rID = maxtable.rID</sql><current_tab id="0"/></tab_sql></sqlb_project>
