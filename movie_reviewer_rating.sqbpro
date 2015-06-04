@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/Users/ling/Desktop/DB_SQL/rating.db"/><window><current_tab id="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="808"/><expanded_item id="0" parent="-1"/><expanded_item id="1" parent="-1"/><expanded_item id="2" parent="-1"/><expanded_item id="3" parent="-1"/></tab_structure><tab_browse><current_table name="Rating"/><column_widths data="AAAAAQAAAAoATQBvAHYAaQBlAAAAAQAAAAAAAAAA"/><sort column="2" order="1"/></tab_browse><tab_sql><sql name="SQL 1">/*There are 3 tables. Here's the schema: 
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/Users/ling/Desktop/DB_SQL/rating.db"/><window><current_tab id="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="808"/><expanded_item id="0" parent="-1"/><expanded_item id="1" parent="-1"/><expanded_item id="2" parent="-1"/><expanded_item id="3" parent="-1"/></tab_structure><tab_browse><current_table name="Movie"/><column_widths data="AAAAAQAAAAoATQBvAHYAaQBlAAAAAQAAAAAAAAAA"/><sort column="0" order="0"/></tab_browse><tab_sql><sql name="SQL 1">/*There are 3 tables. Here's the schema: 
 
 Movie ( mID, title, year, director ) 
 English: There is a movie with ID number mID, a title, a release year, and a director. 
@@ -131,6 +131,41 @@ select name1, name2 from
 		from  Rating Ra1, Rating Ra2
 		where Ra1.rID &lt;&gt; Ra2.rID and Ra1.mID=Ra2.mID) 
 		as pairID
-	where Rv1.rID=pairID.id1 and Rv2.rID=pairID.id2) 
+	where Rv1.rID=pairID.id1 and Rv2.rID=pairID.id2) I
 	as pairName
-where name1 &lt; name2</sql><current_tab id="0"/></tab_sql></sqlb_project>
+where name1 &lt; name2
+
+/* Q15 For each rating that is the lowest (fewest stars) currently in the database, return the reviewer name, movie title, and number of stars. 
+select name, title, stars
+from Reviewer, Rating, Movie
+where reviewer.rID=rating.rID and rating.mID=movie.mID
+	and stars = (select MIN (stars) as lowest
+		from Rating)
+
+/* Q16 List movie titles and average ratings, from highest-rated to lowest-rated. If two or more movies have the same average rating, list them in alphabetical order. 
+select title, avgRating
+from Movie, 
+	(select mID, avg(stars) as avgRating
+	from Rating
+	group by mID) 
+	as avgmid
+where movie.mID=avgmid.mID
+order by avgRating DESC, title
+
+/* Q17 Find the names of all reviewers who have contributed three or more ratings. (As an extra challenge, try writing the query without HAVING or without COUNT.) 
+select name
+from Reviewer, Rating
+where reviewer.rID=rating.rID
+group by Rating.rID
+having count(stars) &gt;=3 
+
+/* Q18  Some directors directed more than one movie. For all such directors, return the titles of all movies directed by them, along with the director name. Sort by director name, then movie title. (As an extra challenge, try writing the query both with and without COUNT.) 
+select title, director
+from Movie
+where director in (select director 
+		from Movie 
+		group by director
+		having count(title)&gt;1)
+order by 2,1
+
+/* Q19 Find the movie(s) with the highest average rating. Return the movie title(s) and average rating. (Hint: This query is more difficult to write in SQLite than other systems; you might think of it as finding the highest average rating and then choosing the movie(s) with that average rating.)</sql><current_tab id="0"/></tab_sql></sqlb_project>
