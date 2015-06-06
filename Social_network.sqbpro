@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/Users/ling/Desktop/DB_SQL/Social_network.db"/><window><current_tab id="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="808"/><expanded_item id="0" parent="-1"/><expanded_item id="1" parent="-1"/><expanded_item id="2" parent="-1"/><expanded_item id="3" parent="-1"/></tab_structure><tab_browse><current_table name="Friend"/><column_widths data="AAAAAQAAAAwARgByAGkAZQBuAGQAAAABAAAAAAAAAAA="/><sort column="0" order="0"/></tab_browse><tab_sql><sql name="SQL 1">/* Delete the tables if they already exist */
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/Users/ling/Desktop/DB_SQL/Social_network.db"/><window><current_tab id="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="808"/><expanded_item id="0" parent="-1"/><expanded_item id="1" parent="-1"/><expanded_item id="2" parent="-1"/><expanded_item id="3" parent="-1"/></tab_structure><tab_browse><current_table name="Highschooler"/><column_widths data="AAAAAQAAAAwARgByAGkAZQBuAGQAAAABAAAAAAAAAAA="/><sort column="0" order="0"/></tab_browse><tab_sql><sql name="SQL 1">/* Delete the tables if they already exist */
 drop table if exists Highschooler;
 drop table if exists Friend;
 drop table if exists Likes;
@@ -113,6 +113,15 @@ where	h1.ID=Likes.ID1 and h2.ID=Likes.ID2
 				and h1.ID =f1.ID1 and h3.ID =f1.ID2
 				and h2.ID=f2.ID1 and h3.ID=f2.ID2
 				
+/* Q8 Find the difference between the number of students in the school and the number of different first names. */
+select		id.idnum - name.namenum
+from		(select count(ID) as idnum from Highschooler) as id,
+				(select count(distinct name) as namenum from Highschooler ) as name
 
-
+/* Q9 Find the name and grade of all students who are liked by more than one other student. */
+select		name, grade
+from		Highschooler, Likes
+where	ID=Likes.ID2 
+group by	ID2
+having	count(ID1) &gt;1
 </sql><current_tab id="0"/></tab_sql></sqlb_project>
