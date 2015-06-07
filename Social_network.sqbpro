@@ -124,4 +124,24 @@ from		Highschooler, Likes
 where	ID=Likes.ID2 
 group by	ID2
 having	count(ID1) &gt;1
+
+/* Q10 For every situation where student A likes student B, but student B likes a different student C, return the names and grades of A, B, and C. */
+select		h1.name, h1.grade, h2.name, h2.grade, h3.name, h3.grade
+from		Highschooler h1, Highschooler h2, Highschooler h3, Likes L1, Likes L2
+where	h1.ID=L1.ID1
+				and h2.ID=L1.ID2
+				and h1.ID not in (select ID2 from Likes where ID1=h2.ID)
+				and h2.ID= L2.ID1
+				and h3.ID=L2.ID2
+				
+/* Q11 Find those students for whom all of their friends are in different grades from themselves. Return the students' names and grades. */
+select		distinct h1.name, h1.grade
+from		Highschooler h1, Highschooler h2, Friend
+where	not exists (select grade 
+									from Highschooler h2, Friend
+									where h1.ID=Friend.ID1 
+									and h2.ID=Friend.ID2
+									and h1.grade = h2.grade)
+
+
 </sql><current_tab id="0"/></tab_sql></sqlb_project>
