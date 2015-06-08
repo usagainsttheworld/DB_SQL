@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/Users/ling/Desktop/DB_SQL/Social_network.db"/><window><current_tab id="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="808"/><expanded_item id="0" parent="-1"/><expanded_item id="1" parent="-1"/><expanded_item id="2" parent="-1"/><expanded_item id="3" parent="-1"/></tab_structure><tab_browse><current_table name="Highschooler"/><column_widths data="AAAAAQAAAAwARgByAGkAZQBuAGQAAAABAAAAAAAAAAA="/><sort column="0" order="0"/></tab_browse><tab_sql><sql name="SQL 1">/* Delete the tables if they already exist */
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/Users/ling/Desktop/DB_SQL/Social_network.db"/><window><current_tab id="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="808"/><expanded_item id="0" parent="-1"/><expanded_item id="1" parent="-1"/><expanded_item id="2" parent="-1"/><expanded_item id="3" parent="-1"/></tab_structure><tab_browse><current_table name="Highschooler"/><column_widths data="AAAAAQAAAAwARgByAGkAZQBuAGQAAAABAAAAAAAAAAA="/><sort column="2" order="1"/></tab_browse><tab_sql><sql name="SQL 1">/* Delete the tables if they already exist */
 drop table if exists Highschooler;
 drop table if exists Friend;
 drop table if exists Likes;
@@ -143,5 +143,48 @@ where	not exists (select grade
 									and h2.ID=Friend.ID2
 									and h1.grade = h2.grade)
 
+/* Q12 What is the average number of friends per student? (Your result should be just one number.) */
+select		avg(friendperID) as avefriend
+from		(select		ID1, count(ID2) as friendperID
+					from		Friend
+					group by	ID1) as friendperIDtable
+					
+/* Q13 Find the number of students who are either friends with Cassandra or are friends of friends of Cassandra. Do not count Cassandra, even though technically she is a friend of a friend. */
+select		count(ID)
+from		(select		ID, name
+				from		Highschooler
+				where	ID in		(select		f1.ID2
+												from		Friend f1, Highschooler 
+												where	Highschooler.ID=f1.ID1
+																and Highschooler.name ='Cassandra'
+												) 
+				union
+				select		ID, name
+				from		Highschooler
+				where	ID in		(select		f2.ID2
+												from		Friend f1, Friend f2, Highschooler 
+												where	Highschooler.ID=f1.ID1
+																and Highschooler.name ='Cassandra'
+																and f1.ID2=f2.ID1
+												) 
+				except
+				select		ID, name
+				from		Highschooler
+				where	name='Cassandra'
+				)			
 
-</sql><current_tab id="0"/></tab_sql></sqlb_project>
+/* Q14 Find the name and grade of the student(s) with the greatest number of friends. */
+select		name, grade
+from		Highschooler
+where	ID in 	(	select		ID1
+								from		(select		distinct ID1, count(ID2) as fnum
+												from		Friend 
+												group by	ID1
+												) as fcounts			
+								where	fnum = (select		max(fnum)
+																from		(select		distinct ID1, count(ID2) as fnum
+																from		Friend 
+																group by	ID1
+																) as fcounts
+															) 
+							)</sql><current_tab id="0"/></tab_sql></sqlb_project>
