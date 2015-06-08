@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/Users/ling/Desktop/DB_SQL/Social_network.db"/><window><current_tab id="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="808"/><expanded_item id="0" parent="-1"/><expanded_item id="1" parent="-1"/><expanded_item id="2" parent="-1"/><expanded_item id="3" parent="-1"/></tab_structure><tab_browse><current_table name=""/><column_widths data="AAAAAQAAAAwARgByAGkAZQBuAGQAAAABAAAAAAAAAAA="/><sort column="0" order="0"/></tab_browse><tab_sql><sql name="SQL 1">/* Delete the tables if they already exist */
+/* Delete the tables if they already exist */
 drop table if exists Highschooler;
 drop table if exists Friend;
 drop table if exists Likes;
@@ -73,7 +73,7 @@ where ID in (select	ID2
 select	h1.name, h1.grade, h2.name, h2.grade
 from	Highschooler h1, Highschooler h2, Likes
 where 	h1.ID=Likes.ID1 and h2.ID=Likes.ID2 
-				and h1.grade - h2.grade &gt;= 2
+				and h1.grade - h2.grade >= 2
 
 /* Q3 For every pair of students who both like each other, return the name and grade of both students. Include each pair only once, with the two names in alphabetical order. */
 select	h1.name, h1.grade, h2.name, h2.grade
@@ -81,7 +81,7 @@ from	Likes L1, Likes L2, Highschooler h1, Highschooler h2
 where	h1.ID=L1.ID1  and h2.ID = L1.ID2 
 		and L1.ID1 = L2.ID2 
 		and L1.ID2 = L2.ID1
-		and h1.name &lt; h2.name
+		and h1.name < h2.name
 
 /* Q4 Find all students who do not appear in the Likes table (as a student who likes or is liked) and return their names and grades. Sort by grade, then by name within each grade. */
 select	name, grade
@@ -101,7 +101,7 @@ where	ID not in 	(select	h1.ID
 					from	Highschooler h1, HIghschooler h2, Friend
 					where	h1.ID=Friend.ID1 
 							and h2.ID=Friend.ID2
-							and h1.grade&lt;&gt;h2.grade
+							and h1.grade<>h2.grade
 					)
 order by	grade, name
 
@@ -123,7 +123,7 @@ select	name, grade
 from	Highschooler, Likes
 where	ID=Likes.ID2 
 group by	ID2
-having	count(ID1) &gt;1
+having	count(ID1) >1
 
 /* Q10 For every situation where student A likes student B, but student B likes a different student C, return the names and grades of A, B, and C. */
 select	h1.name, h1.grade, h2.name, h2.grade, h3.name, h3.grade
@@ -218,4 +218,4 @@ select		distinct h1.ID, h3.ID
 			where	h1.ID=f1.ID1 and h2.ID=f1.ID2
 					and h2.ID=f2.ID1 and h3.ID=f2.ID2
 					and h1.ID not in (select ID2 from Friend where ID1=h3.ID)
-					and h1.ID &lt;&gt; h3.ID</sql><current_tab id="0"/></tab_sql></sqlb_project>
+					and h1.ID <> h3.ID
